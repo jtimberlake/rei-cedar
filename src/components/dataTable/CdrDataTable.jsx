@@ -181,7 +181,7 @@ export default {
           >
             {this.caption
               && <caption
-                class="cdr-display-sr-only"
+                class={this.style['cdr-data-table__caption-sr']}
               >
                 { this.caption }
               </caption>

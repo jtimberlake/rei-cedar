@@ -6,10 +6,10 @@ $cdr-warn: false;
 @import "./settings/_index";
 
 /* Generic */
-@import "./generic/_reset";
-@import "./generic/_container";
-@import "./generic/_color";
-@import "./generic/_typography";
+@import "./reset";
+@import "./utility/_container";
+@import "./utility/_color";
+@import "./utility/_typography";
 
 /* Utilities */
 @import './utility/_visibility';
