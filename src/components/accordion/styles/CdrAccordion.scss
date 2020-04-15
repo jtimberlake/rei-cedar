@@ -59,12 +59,9 @@ $accordion-border: 1px solid $cdr-color-border-primary;
 
   &__content-container {
     overflow: hidden;
-    transition-duration: $cdr-duration-3-x;
-    transition-property: max-height;
-    transition-timing-function: cubic-bezier(0.15, 0, 0.15, 1); // TODO: possible token?
-
+    max-height: 0;
     &:global(.open) {
-      transition-duration: $cdr-duration-3-x;
+      max-height: none;
     }
   }
 
@@ -75,6 +72,7 @@ $accordion-border: 1px solid $cdr-color-border-primary;
     color: $cdr-color-text-primary;
     padding: $cdr-space-half-x $cdr-space-one-x $cdr-space-one-x;
     transition: opacity $cdr-duration-1-x linear;
+    transition: max-height $cdr-duration-3-x cubic-bezier(0.15, 0, 0.15, 1);
     opacity: 0;
 
     & > * {

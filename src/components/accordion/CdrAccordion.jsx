@@ -84,7 +84,7 @@ export default {
   },
   watch: {
     opened() {
-      this.maxHeight = this.opened ? `${this.$refs['accordion-content'].clientHeight}px` : 0;
+      this.maxHeight = this.opened ? 'none' : 0;
     },
   },
   mounted() {
@@ -94,7 +94,7 @@ export default {
       nice and smooth the first time they click it.
     */
     if (this.opened && this.$refs['accordion-content']) {
-      this.maxHeight = `${this.$refs['accordion-content'].clientHeight}px`;
+      this.maxHeight = 'none';
     }
   },
   methods: {
@@ -143,7 +143,6 @@ export default {
       </Heading>
       <div
         class={clsx(this.style['cdr-accordion__content-container'], this.isOpenClass)}
-        style={ { maxHeight: this.maxHeight } }
       >
         <div
           class={clsx(this.style['cdr-accordion__content'], this.isOpenClass)}
