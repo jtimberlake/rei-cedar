@@ -1,12 +1,16 @@
 import debounce from 'lodash-es/debounce';
 import tabbable from 'tabbable';
 import clsx from 'clsx';
-import { CdrBreakpointSm, CdrSpaceOneX, CdrSpaceTwoX } from '@rei/cdr-tokens';
 import style from './styles/CdrModal.scss';
 import onTransitionEnd from './onTransitionEnd';
 import CdrButton from '../button/CdrButton';
 import IconXLg from '../icon/comps/x-lg';
 import CdrText from '../text/CdrText';
+
+// TODO: fix ESM issue with jest/'febs dev' and import from cdr-tokens
+const CdrBreakpointSm = '768';
+const CdrSpaceOneX = '16';
+const CdrSpaceTwoX = '32';
 
 export default {
   name: 'CdrModal',
