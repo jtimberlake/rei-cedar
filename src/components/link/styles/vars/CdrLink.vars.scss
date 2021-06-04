@@ -15,9 +15,6 @@
   text-decoration: underline;
   vertical-align: top;
 
-  /* States
-    ---------- */
-
   &:active,
   &:focus {
     color: $cdr-color-text-link-active;
@@ -34,6 +31,18 @@
     outline-offset: 0;
   }
 
+}
+
+@mixin cdr-link-inherit-color-mixin() {
+  fill: inherit;
+  color: inherit;
+
+  &:active,
+  &:hover,
+  &:focus {
+    color: inherit;
+    fill: inherit;
+  }
 }
 
 @mixin cdr-link-standalone-mixin() {

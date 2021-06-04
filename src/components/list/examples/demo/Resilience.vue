@@ -1,26 +1,36 @@
 <template>
   <div>
 
-    <cdr-text
-      tag="h3"
-      modifier="heading-serif-600 heading-serif-700@md heading-serif-700@lg"
-    >
+    <h3>
       Resilience Tests
-    </cdr-text>
+    </h3>
 
-    <cdr-text
-      tag="h4"
-      modifier="heading-serif-500 heading-serif-600@md heading-serif-600@lg"
-    >
+    <h4>
+      List in small container
+    </h4>
+    <div style="width: 50px;">
+      <cdr-list modifier="unordered">
+        <li>foofofofofofofofofofofofofo</li>
+        <li>
+          bar
+          <cdr-list modifier="unordered">
+            <li>lala lalalalal alalalalalal alalalala lalala</li>
+            <li>wa</li>
+          </cdr-list>
+        </li>
+        <li>zoo</li>
+      </cdr-list>
+    </div>
+    <h4>
       Typography validation - text wrapping lists
-    </cdr-text>
+    </h4>
 
     <cdr-text
       v-for="p1 in paragraphs"
       :key="p1"
       :modifier="`body-${p1}`"
     >
-      <cdr-list space="cdr-mb-space-two-x">
+      <cdr-list>
         <li>List item text</li>
         <li>Lorem ipsum dolor
           <cdr-text
@@ -39,7 +49,6 @@
       </cdr-list>
     </cdr-text>
 
-
     <cdr-text
       v-for="utility in utilities"
       :key="utility"
@@ -49,7 +58,6 @@
         v-for="l1 in lists"
         :key="l1"
         :modifier="`${l1}`"
-        space="cdr-mb-space-two-x"
       >
         <li>utility-sans {{ utility }} in list {{ l1 }} </li>
         <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmodList ordered
@@ -65,7 +73,7 @@
     <cdr-list
       tag="ol"
       modifier="ordered"
-      class="cdr-mt-space-one-x"
+      class="stack"
     >
       <li
         v-for="paragraph in paragraphs"
@@ -98,7 +106,7 @@
 
     <cdr-list
       modifier="unordered"
-      class="cdr-mt-space-one-x"
+      class="stack"
     >
       <li
         v-for="utility in utilities"
@@ -131,7 +139,7 @@
     </cdr-list>
 
     NON Cedar list
-    <ul class="cdr-mt-space-one-x">
+    <ul class="stack">
       <li
         v-for="utility in utilities"
         :key="utility"

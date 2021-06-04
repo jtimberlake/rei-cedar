@@ -1,5 +1,8 @@
 import debounce from 'lodash-es/debounce';
 import clsx from 'clsx';
+import {
+  CdrColorBackgroundPrimary, CdrSpaceOneX, CdrSpaceHalfX,
+} from '@rei/cdr-tokens/dist/js/cdr-tokens.esm';
 import modifier from '../../mixins/modifier';
 import size from '../../mixins/size';
 import style from './styles/CdrTabs.scss';
@@ -15,6 +18,10 @@ export default {
     activeTab: {
       type: Number,
       default: 0,
+    },
+    backgroundColor: {
+      type: String,
+      default: CdrColorBackgroundPrimary,
     },
   },
   data() {
@@ -42,6 +49,18 @@ export default {
         width: `${this.underlineWidth}px`,
       };
     },
+    gradientLeftStyle() {
+      const gradient = `linear-gradient(to left, rgba(255, 255, 255, 0), ${this.backgroundColor})`;
+      return {
+        background: gradient,
+      };
+    },
+    gradientRightStyle() {
+      const gradient = `linear-gradient(to right, rgba(255, 255, 255, 0), ${this.backgroundColor})`;
+      return {
+        background: gradient,
+      };
+    },
   },
   mounted() {
     this.tabs = (this.$slots.default || [])
@@ -59,7 +78,7 @@ export default {
       this.calculateOverflow();
       setTimeout(() => {
         this.updateUnderline();
-      }, 250);
+      }, 500);
     });
     // Check for header overflow on window resize for gradient behavior.
     window.addEventListener('resize', debounce(() => {
@@ -133,7 +152,7 @@ export default {
       }
       this.activeTabIndex = newIndex;
       this.updateUnderline();
-      this.$refs.cdrTabsHeader.children[this.activeTabIndex].children[0].focus();
+      this.$refs.cdrTabsHeader.children[this.activeTabIndex].focus();
     },
     rightArrowNav: debounce(function handleRightArrow() {
       const nextTab = this.getNextTab(this.activeTabIndex + 1);
@@ -167,14 +186,21 @@ export default {
       const elements = Array.from(this.$refs.cdrTabsHeader.children);
       if (elements.length > 0) {
         const activeTab = elements[this.activeTabIndex];
-        this.underlineOffsetX = activeTab.offsetLeft
-          - this.$refs.cdrTabsHeader.parentElement.scrollLeft;
-        this.underlineWidth = activeTab.firstChild.offsetWidth;
+        const activeRect = activeTab.getBoundingClientRect();
+        const parentRect = this.$refs.cdrTabsHeader.getBoundingClientRect();
+        const offset = activeRect.x - parentRect.x;
 
-        // mobile fix, hide the underline if it scrolls outside the container
-        if (this.underlineOffsetX > this.$refs.cdrTabsContainer.offsetWidth) {
-          this.underlineOffsetX = this.$refs.cdrTabsContainer.offsetWidth;
-          this.underlineWidth = 0;
+        this.underlineOffsetX = offset
+          - this.$refs.cdrTabsHeader.parentElement.scrollLeft;
+        this.underlineWidth = activeRect.width;
+
+        // shrink/hide the underline if it scrolls outside the container
+        if (this.underlineOffsetX + this.underlineWidth >= parentRect.width) {
+          this.underlineWidth = Math.max(0, parentRect.width - this.underlineOffsetX);
+          this.underlineOffsetX = Math.min(this.underlineOffsetX, parentRect.width);
+        } else if (this.underlineOffsetX < 0) {
+          this.underlineWidth = Math.max(0, this.underlineWidth + this.underlineOffsetX);
+          this.underlineOffsetX = 0;
         }
       }
     },
@@ -184,7 +210,7 @@ export default {
       }
     },
     setFocusToActiveTabHeader() {
-      this.$refs.cdrTabsHeader.children[this.activeTabIndex].children[0].focus();
+      this.$refs.cdrTabsHeader.children[this.activeTabIndex].focus();
     },
     getHeaderWidth() {
       let headerElements = [];
@@ -192,39 +218,53 @@ export default {
         headerElements = Array.from(this.$refs.cdrTabsHeader.children);
       }
       let totalWidth = 0;
-      headerElements.forEach((element) => {
+      headerElements.forEach((element, i) => {
+        // account for margin-left on header elements
+        if (i > 0) {
+          totalWidth += this.size === 'small' ? Number(CdrSpaceHalfX) : Number(CdrSpaceOneX);
+        }
         totalWidth += element.offsetWidth || 0;
       });
       return totalWidth;
     },
     hideScrollBar() {
-      const styleRef = this.$refs.cdrTabsContainer.style;
+      const containerRef = this.$refs.cdrTabsContainer.style;
+      const slotRef = this.$refs.slotWrapper.style;
       window.addEventListener('transitionend', () => {
-        styleRef.setProperty('overflow-x', 'unset');
+        containerRef.setProperty('overflow-x', 'unset');
+        slotRef.setProperty('overflow-y', 'unset');
       }, { once: true });
-      styleRef.setProperty('overflow-x', 'hidden');
+      containerRef.setProperty('overflow-x', 'hidden');
+      slotRef.setProperty('overflow-y', 'hidden');
     },
     getTabEl(tab) {
       return tab.disabled ? (
-        <span
+        <button
           class={clsx(
-            this.style['cdr-tabs__header-item-label'],
-            this.style['cdr-tabs__header-item-label--disabled'],
+            this.style['cdr-tabs__header-item'],
+            this.style['cdr-tabs__header-item--disabled'],
           )}
-          aria-disabled="true"
-          aria-selected="false"
+          disabled
         >
           {tab.name}
-        </span>
+        </button>
       ) : (
-        <a
+        <button
+          role="tab"
+          aria-selected={tab.active}
+          aria-controls={tab.id}
+          id={tab.ariaLabelledby}
+          key={tab.id}
+          class={clsx(
+            tab.active ? this.style['cdr-tabs__header-item-active'] : '',
+            this.style['cdr-tabs__header-item'],
+          )}
           tabIndex={tab.active ? 0 : -1}
           vOn:click_prevent={(e) => this.handleClick(tab, e)}
-          href={`#${tab.id}`}
-          class={this.style['cdr-tabs__header-item-label']}
+          js-name={ tab.name }
         >
           { tab.name }
-        </a>
+        </button>
       );
     },
   },
@@ -236,46 +276,36 @@ export default {
         style={{ height: this.height }}
       >
         <div
-          class={clsx(
-            this.overflowLeft ? this.style['cdr-tabs__header-gradient-left'] : '',
-            this.overflowRight ? this.style['cdr-tabs__header-gradient-right'] : '',
-            this.style['cdr-tabs__gradient-container'],
-          )}
+          class={this.style['cdr-tabs__gradient-container']}
           vOn:keyup_right={this.rightArrowNav}
           vOn:keyup_left={this.leftArrowNav}
           vOn:keydown_down_prevent={this.handleDownArrowNav}
         >
+          <div class={clsx(
+            this.style['cdr-tabs__gradient'],
+            this.style['cdr-tabs__gradient--left'],
+            this.overflowLeft ? this.style['cdr-tabs__gradient--active'] : '',
+          )}
+            style={this.gradientLeftStyle}
+          ></div>
           <nav
-            class={clsx(
-              this.overflowLeft ? this.style['cdr-tabs__header-gradient-left'] : '',
-              this.overflowRight ? this.style['cdr-tabs__header-gradient-right'] : '',
-              this.style['cdr-tabs__header-container'],
-            )}
+            class={this.style['cdr-tabs__header-container']}
           >
-            <ol
+            <div
               class={this.style['cdr-tabs__header']}
               role="tablist"
               ref="cdrTabsHeader"
             >
-              {this.tabs.map((tab) => (
-                  <li
-                    role="tab"
-                    aria-selected={tab.active}
-                    aria-disabled="false"
-                    aria-controls={tab.id}
-                    id={tab.ariaLabelledby}
-                    key={tab.id}
-                    class={clsx(
-                      tab.active ? this.style['cdr-tabs__header-item-active'] : '',
-                      this.style['cdr-tabs__header-item'],
-                    )}
-                  >
-                    {this.getTabEl(tab)}
-                  </li>
-              ))}
-            </ol>
+              {this.tabs.map((tab) => this.getTabEl(tab))}
+            </div>
           </nav>
-
+          <div class={clsx(
+            this.style['cdr-tabs__gradient'],
+            this.style['cdr-tabs__gradient--right'],
+            this.overflowRight ? this.style['cdr-tabs__gradient--active'] : '',
+          )}
+            style={this.gradientRightStyle}
+          ></div>
           <div
             class={this.style['cdr-tabs__underline']}
             style={this.underlineStyle}

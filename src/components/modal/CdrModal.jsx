@@ -8,14 +8,12 @@ import style from './styles/CdrModal.scss';
 import onTransitionEnd from './onTransitionEnd';
 import CdrButton from '../button/CdrButton';
 import IconXLg from '../icon/comps/x-lg';
-import CdrText from '../text/CdrText';
 
 export default {
   name: 'CdrModal',
   components: {
     CdrButton,
     IconXLg,
-    CdrText,
   },
   props: {
     opened: {
@@ -26,12 +24,17 @@ export default {
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      required: false,
+      default: 'dialog',
+    },
     showTitle: {
       type: Boolean,
       required: false,
       default: true,
     },
-    ariaDescribedbBy: {
+    ariaDescribedby: {
       type: String,
       required: false,
       default: null,
@@ -56,25 +59,32 @@ export default {
       keyHandler: null,
       lastActive: null,
       focusHandler: null,
-      reallyClosed: !this.opened,
+      isOpening: false,
       offset: null,
       headerHeight: 0,
       totalHeight: 0,
-      scrollHeight: 0,
-      offsetHeight: 0,
+      isScrolling: false,
+      hasScrollbar: false,
       fullscreen: false,
     };
   },
   computed: {
     dialogAttrs() {
       return {
-        'aria-describedby': this.ariaDescribedBy,
+        'aria-describedby': this.ariaDescribedby,
         'aria-modal': 'true',
         id: this.id,
       };
     },
-    dialogClass() {
-      return `${this.style['cdr-modal__dialog']}`;
+    scrollPadding() {
+      if (this.isScrolling && this.hasScrollbar) {
+        // content is scrolling, scrollbar is always present
+        return 4;
+      } if (this.isScrolling) {
+        // content is scrolling, scrollbar only appears on scroll
+        return 12;
+      }
+      return 0;
     },
     verticalSpace() {
       // contentWrap vertical padding
@@ -89,9 +99,6 @@ export default {
       return this.totalHeight
         - this.headerHeight
         - this.verticalSpace;
-    },
-    scrolling() {
-      return this.scrollHeight > this.offsetHeight;
     },
   },
   watch: {
@@ -125,8 +132,8 @@ export default {
         this.totalHeight = window.innerHeight;
         this.fullscreen = window.innerWidth < CdrBreakpointSm;
         this.headerHeight = this.$refs.header.offsetHeight;
-        this.scrollHeight = this.$refs.content.scrollHeight;
-        this.offsetHeight = this.$refs.content.offsetHeight;
+        this.isScrolling = this.$refs.content.scrollHeight > this.$refs.content.offsetHeight;
+        this.hasScrollbar = (this.$refs.content.offsetWidth - this.$refs.content.clientWidth) > 0;
       });
     },
     handleKeyDown({ key }) {
@@ -154,9 +161,8 @@ export default {
     },
     handleOpened() {
       const { activeElement } = document;
-
       this.addNoScroll();
-      this.reallyClosed = false;
+      this.isOpening = true;
       this.lastActive = activeElement;
 
       this.$nextTick(() => {
@@ -176,20 +182,24 @@ export default {
       });
     },
     handleClosed() {
+      const { documentElement } = document;
       document.removeEventListener('keydown', this.keyHandler);
+      document.removeEventListener('focusin', this.focusHandler, true);
+      this.isOpening = false;
 
       this.unsubscribe = onTransitionEnd(
         this.$refs.wrapper,
         () => {
+          if (this.isOpening) return;
           this.unsubscribe();
           this.removeNoScroll();
           this.unsubscribe = null;
-          this.reallyClosed = true;
 
+          // handle scroll-behavior: smooth
+          if (documentElement) documentElement.style.scrollBehavior = 'auto';
           // restore previous scroll position
           window.scrollTo(this.offset.x, this.offset.y);
-
-          document.removeEventListener('focusin', this.focusHandler, true);
+          if (documentElement) documentElement.style.scrollBehavior = '';
 
           if (this.lastActive) this.lastActive.focus();
         },
@@ -247,14 +257,11 @@ export default {
   render() {
     const {
       onClick,
-      modalId,
       opened,
       label,
       wrapperClass,
       overlayClass,
-      dialogClass,
       contentClass,
-      reallyClosed,
     } = this;
     return (
       <div
@@ -265,7 +272,6 @@ export default {
           },
         )}
         ref="wrapper"
-        role="presentation"
       >
         <div class={clsx(this.style['cdr-modal__outerWrap'], wrapperClass)}>
           <div
@@ -280,17 +286,16 @@ export default {
           */}
           <div
             ref="modal"
-            class={clsx(this.style['cdr-modal__contentWrap'], dialogClass)}
-            id={modalId}
+            class={clsx(this.style['cdr-modal__contentWrap'], this.style['cdr-modal__dialog'])}
             tabIndex="-1"
-            role="dialog"
+            role={this.role}
             aria-modal={!!opened}
             aria-label={label}
             {...{ attrs: this.dialogAttrs }}
           >
-            <div
+            {this.$slots.modal || (<div
               class={clsx(this.style['cdr-modal__innerWrap'], contentClass)}
-              style={reallyClosed
+              style={!opened
                 ? { display: 'none' }
                 : undefined
               }
@@ -307,17 +312,13 @@ export default {
                       }
                       {
                         this.showTitle && !this.$slots.title && (
-                          <cdr-text
-                            tag="h1"
-                            modifier="heading-serif-600"
-                          >
+                          <h1>
                             {this.label}
-                          </cdr-text>
+                          </h1>
                         )
                       }
                     </div>
                     <cdr-button
-                      id="close-modal-button"
                       class={this.style['cdr-modal__close-button']}
                       icon-only
                       with-background={true}
@@ -326,7 +327,6 @@ export default {
                     >
                       <IconXLg
                         slot="icon"
-                        class="cdr-button__icon"
                         inherit-color
                       />
                     </cdr-button>
@@ -337,23 +337,19 @@ export default {
                   >
                     <div
                       class={this.style['cdr-modal__text-content']}
-                      style={ { maxHeight: `${this.scrollMaxHeight}px` } }
+                      style={ {
+                        maxHeight: `${this.scrollMaxHeight}px`,
+                        paddingRight: `${this.scrollPadding}px`,
+                      } }
                       ref="content"
                       tabindex="0"
                     >
                       {this.$slots.default}
                     </div>
-                    {
-                      this.scrolling && (
-                        <div
-                        class={this.style['cdr-modal__text-fade']}
-                      />
-                      )
-                    }
                   </div>
                 </div>
               </section>
-            </div>
+            </div>)}
           </div>
           <div tabIndex={opened ? '0' : undefined} />
         </div>

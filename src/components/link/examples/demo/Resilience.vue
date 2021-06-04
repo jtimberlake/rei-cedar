@@ -1,19 +1,13 @@
 <template>
   <div>
 
-    <cdr-text
-      tag="h3"
-      modifier="heading-serif-600 heading-serif-700@md heading-serif-700@lg"
-    >
+    <h3>
       Resilience Tests
-    </cdr-text>
+    </h3>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading"
-    >Content Resilience, too much content</cdr-text>
+    <h3>Content Resilience, too much content</h3>
     <div class="anchor-example">
-      <cdr-link space="cdr-space-inset-one-x">
+      <cdr-link href="#foo">
         Lorem ipsum dolor sit amet consectetur adipisicing elit.
         Officia inventore, quis ducimus itaque rerum id animi accusantium porro ex numquam.
         Dolorum ducimus illo doloremque ullam quas. Vel similique laudantium error!
@@ -38,47 +32,27 @@
       </cdr-link>
     </div>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading"
-    >Content Resilience, too little content</cdr-text>
+    <h3>Content Resilience, too little content</h3>
     <div class="anchor-example">
-      <cdr-link space="cdr-space-inset-one-x">
+      <cdr-link href="#foo">
         K
       </cdr-link>
     </div>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading"
-    >Link using a &lt;button&gt; element</cdr-text>
-    <div class="anchor-example">
-      <cdr-link
-        tag="button"
-        space="cdr-space-inset-one-x"
-        data-backstop="cdr-link--button"
-        @click="clicked"
-      >I'm a button!</cdr-link>
-    </div>
-
-
-    <cdr-text
-      tag="h4"
-      modifier="heading-serif-500 heading-serif-600@md heading-serif-600@lg"
-    >
+    <h4>
       Typography validation -
-    </cdr-text>
+    </h4>
 
     <cdr-text
       v-for="p1 in paragraphs"
       :key="`link-p1-${p1}`"
-      :modifier="`body-${p1}`"
+      :class="`cdr-text-dev--body-${p1}`"
     >
-      <cdr-link space="cdr-mb-space-half-x">
+      <cdr-link href="#foo">
         item text
         <cdr-text
           tag="span"
-          :modifier="`body-strong-${p1}`"
+          :class="`cdr-text-dev--body-strong-${p1}`"
         >
           sit amet,
         </cdr-text>
@@ -88,13 +62,13 @@
     <cdr-text
       v-for="u1 in utilities"
       :key="`link-u1-${u1}`"
-      :modifier="`utility-sans-${u1}`"
+      :class="`cdr-text-dev--utility-sans-${u1}`"
     >
-      <cdr-link space="cdr-mb-space-half-x">
+      <cdr-link href="#foo">
         item text
         <cdr-text
           tag="span"
-          :modifier="`utility-sans-strong-${u1}`"
+          :class="`cdr-text-dev--utility-sans-strong-${u1}`"
         >
           sit amet,
         </cdr-text>
@@ -104,14 +78,13 @@
     <cdr-text
       v-for="u2 in utilities"
       :key="`link-u2-${u2}`"
-      :modifier="`utility-sans-strong-${u2}`"
+      :class="`cdr-text-dev--utility-sans-strong-${u2}`"
     >
-      <cdr-link>
+      <cdr-link href="#foo">
         <cdr-icon
           inherit-color
           use="#mail"
           modifier="inherit-color"
-          space="cdr-mr-space-half-x"
         />
         text element wrapping link with nested icon
       </cdr-link>
@@ -119,34 +92,33 @@
 
     <cdr-list>
       <li
-        space="cdr-space-inset-one-x"
+
         v-for="u1 in utilities"
         :key="`list-link-left-icon-${u1}`"
       >
-        <cdr-link>
+        <cdr-link href="#foo">
           <cdr-icon
             inherit-color
             use="#mail"
             modifier="inherit-color"
-            space="cdr-mr-space-half-x"
           />
           <cdr-text
             tag="span"
-            :modifier="`utility-sans-strong-${u1}`"
+            :class="`cdr-text-dev--utility-sans-strong-${u1}`"
           >
             Icon on the left
           </cdr-text>
         </cdr-link>
       </li>
       <li
-        space="cdr-space-inset-one-x"
+
         v-for="u1 in utilities"
         :key="`list-link-right-icon-${u1}`"
       >
-        <cdr-link>
+        <cdr-link href="#foo">
           <cdr-text
             tag="span"
-            :modifier="`utility-sans-strong-${u1}`"
+            :class="`cdr-text-dev--utility-sans-strong-${u1}`"
           >
             Icon on the right
           </cdr-text>
@@ -154,25 +126,23 @@
             inherit-color
             use="#download"
             modifier="inherit-color"
-            space="cdr-ml-space-half-x"
           />
         </cdr-link>
       </li>
       <li
-        space="cdr-space-inset-one-x"
+
         v-for="u1 in utilities"
         :key="`list-link-both-icon-${u1}`"
       >
-        <cdr-link>
+        <cdr-link href="#foo">
           <cdr-icon
             inherit-color
             use="#twitter"
             modifier="inherit-color"
-            space="cdr-mr-space-half-x"
           />
           <cdr-text
             tag="span"
-            :modifier="`utility-sans-strong-${u1}`"
+            :class="`cdr-text-dev--utility-sans-strong-${u1}`"
           >
             Icons on both sides
           </cdr-text>
@@ -180,7 +150,6 @@
             inherit-color
             use="#external-link"
             modifier="inherit-color"
-            space="cdr-ml-space-half-x"
           />
         </cdr-link>
       </li>

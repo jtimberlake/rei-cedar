@@ -2,12 +2,11 @@ import clsx from 'clsx';
 import modifier from '../../mixins/modifier';
 import fullWidth from '../../mixins/fullWidth';
 import size from '../../mixins/size';
-import space from '../../mixins/space';
 import style from './styles/CdrButton.scss';
 
 export default {
   name: 'CdrButton',
-  mixins: [modifier, size, space, fullWidth],
+  mixins: [modifier, size, fullWidth],
   props: {
     /**
      * Controls render as button or anchor. {button, a}
@@ -24,6 +23,13 @@ export default {
       type: String,
       default: 'button',
       validator: (value) => (['button', 'submit', 'reset'].indexOf(value) >= 0) || false,
+    },
+    /**
+     * Increases box-shadow around button to enhance contrast against background
+     */
+    elevated: {
+      type: Boolean,
+      default: false,
     },
     /**
      * Renders an icon-only button. Default slot is disabled. Overrides size and responsiveSize props.
@@ -50,17 +56,26 @@ export default {
       return 'cdr-button';
     },
     defaultClass() {
-      return this.modifyClassName(this.baseClass, 'primary');
+      return this.modifier ? undefined : this.modifyClassName(this.baseClass, 'primary');
     },
     buttonSizeClass() {
-      return !this.iconOnly ? this.sizeClass : null;
+      return !this.iconOnly ? this.sizeClass : this.style[`cdr-button--icon-only-${this.size}`];
     },
     iconClass() {
       const classes = [];
 
-      if (this.$slots.icon && this.$slots.default) {
-        /* only add class for buttons with text + icon */
-        classes.push(this.modifyClassName(this.baseClass, 'has-icon'));
+      if ((this.$slots['icon-left'] || this.$slots.icon) && this.$slots.default) {
+        /* only add class for buttons with text + icon on left */
+        classes.push(this.modifyClassName(this.baseClass, 'has-icon-left'));
+      }
+
+      if (this.$slots['icon-right'] && this.$slots.default) {
+        /* only add class for buttons with text + icon on right */
+        classes.push(this.modifyClassName(this.baseClass, 'has-icon-right'));
+      }
+
+      if (this.elevated) {
+        classes.push(this.modifyClassName(this.baseClass, 'elevated'));
       }
 
       if (this.iconOnly) {
@@ -77,18 +92,20 @@ export default {
   render() {
     const Component = this.tag;
     return (<Component
-      class={clsx(this.defaultClass,
+      class={clsx(
         this.style[this.baseClass],
+        this.defaultClass,
         this.modifierClass,
         this.buttonSizeClass,
         this.fullWidthClass,
         this.iconClass,
-        this.space)}
+      )}
       type={this.tag === 'button' ? this.type : null}
       {...{ on: this.$listeners }}
     >
-      {this.$slots.icon}
+      {this.$slots['icon-left'] || this.$slots.icon}
       {this.$slots.default}
+      {this.$slots['icon-right']}
     </Component>);
   },
 };

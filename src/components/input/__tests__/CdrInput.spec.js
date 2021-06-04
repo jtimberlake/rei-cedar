@@ -3,33 +3,25 @@ import sinon from 'sinon';
 import CdrInput from 'componentdir/input/CdrInput';
 
 describe('CdrInput', () => {
-  it('renders a label element', () => {
+  it('renders correctly', () => {
     const wrapper = mount(CdrInput, {
       propsData: {
         label: 'Label Test',
+        id: 'renders'
       },
     });
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('renders required label correctly', () => {
+  it('renders number input correctly', () => {
     const wrapper = mount(CdrInput, {
       propsData: {
         label: 'Label Test',
-        required: true,
+        id: 'renders',
+        type: 'number',
       },
     });
     expect(wrapper.element).toMatchSnapshot();
-  });
-
-  it('maps input id to label for correctly', () => {
-    const wrapper = shallowMount(CdrInput, {
-      propsData: {
-        label: 'testing',
-        id: 'test',
-      },
-    });
-    expect(wrapper.vm.$refs.input.id).toBe(wrapper.vm.$refs.label.htmlFor);
   });
 
   it('generates an id correctly', () => {
@@ -92,6 +84,34 @@ describe('CdrInput', () => {
       },
     });
     expect(wrapper.vm.$refs.input.hasAttribute('required')).toBe(true);
+  });
+
+  it('sets attrs for number type input', () => {
+    const wrapper = shallowMount(CdrInput, {
+      propsData: {
+        label: 'test',
+        required: true,
+        type: 'number'
+      },
+    });
+    expect(wrapper.find('input').attributes('novalidate')).toBe('novalidate');
+    expect(wrapper.find('input').attributes('pattern')).toBe('[0-9]*');
+    expect(wrapper.find('input').attributes('inputmode')).toBe('numeric');
+    expect(wrapper.find('input').attributes('type')).toBe('number');
+  });
+
+  it('sets attrs for numeric freeform input', () => {
+    const wrapper = shallowMount(CdrInput, {
+      propsData: {
+        label: 'test',
+        required: true,
+        numeric: true
+      },
+    });
+    expect(wrapper.find('input').attributes('novalidate')).toBe('novalidate');
+    expect(wrapper.find('input').attributes('pattern')).toBe('[0-9]*');
+    expect(wrapper.find('input').attributes('inputmode')).toBe('numeric');
+    expect(wrapper.find('input').attributes('type')).toBe('text');
   });
 
   it('sets input autofocus attribute correctly', () => {
@@ -170,16 +190,6 @@ describe('CdrInput', () => {
     expect(wrapper.vm.$refs.input.hasAttribute('type', 'url')).toBe(true);
   });
 
-  it('hide-label sets aria-label correctly', () => {
-    const wrapper = shallowMount(CdrInput, {
-      propsData: {
-        label: 'test',
-        hideLabel: true,
-      },
-    });
-    expect(wrapper.vm.$refs.input.hasAttribute('aria-label', 'test')).toBe(true);
-  });
-
   it('auto generates an id', () => {
     const wrapper = shallowMount(CdrInput, {
       propsData: {
@@ -231,6 +241,25 @@ describe('CdrInput', () => {
     expect(spy.calledOnce).toBeTruthy();
   });
 
+  it('adds focused class to wrapper on input focus', async () => {
+    const spy = sinon.spy();
+    const wrapper = shallowMount(CdrInput, {
+      propsData: {
+        label: 'test',
+      },
+      listeners: {
+        'focus': spy
+      }
+    });
+    const input = wrapper.findComponent({ ref: 'input' });
+    input.trigger('focus')
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.cdr-input--focus').exists()).toBeTruthy();
+    input.trigger('blur')
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.cdr-input--focus').exists()).toBeFalsy();
+  });
+
   it('emits a paste event', () => {
     const spy = sinon.spy();
     const wrapper = shallowMount(CdrInput, {
@@ -263,28 +292,16 @@ describe('CdrInput', () => {
     expect(spy.called).toBeTruthy();
   });
 
-  it('renders helper-text slot', () => {
+  it('renders helper-text-bottom slot', () => {
     const wrapper = shallowMount(CdrInput, {
       propsData: {
         label: 'test',
       },
       slots: {
-        'helper-text': 'very helpful',
+        'helper-text-bottom': 'very helpful',
       },
     });
     expect(wrapper.find('.cdr-input__helper-text').text()).toBe('very helpful');
-  });
-
-  it('renders info slot', () => {
-    const wrapper = shallowMount(CdrInput, {
-      propsData: {
-        label: 'test',
-      },
-      slots: {
-        info: 'very informative',
-      },
-    });
-    expect(wrapper.find('.cdr-input__info-container').text()).toBe('very informative');
   });
 
   it('renders pre-icon slot', () => {
@@ -309,6 +326,96 @@ describe('CdrInput', () => {
       },
     });
     expect(wrapper.find('.cdr-input__post-icon').text()).toBe('😎');
+  });
+
+  it('adds spacing class when post-icon slot is present', () => {
+    const wrapper = shallowMount(CdrInput, {
+      propsData: {
+        label: 'test',
+      },
+      slots: {
+        'post-icon': '😎',
+      },
+    });
+    expect(wrapper.find('.cdr-input--posticon').exists()).toBe(true);
+  });
+
+
+  it('adds spacing class when multiple elements are present in post-icon slot', () => {
+    const wrapper = shallowMount(CdrInput, {
+      propsData: {
+        label: 'test',
+      },
+      slots: {
+        'post-icon': '<div>😎</div><div>🤠</div>',
+      },
+    });
+    expect(wrapper.find('.cdr-input--posticons').exists()).toBe(true);
+  });
+
+  it('renders info action slot', () => {
+    const wrapper = mount(CdrInput, {
+      propsData: {
+        label: 'test',
+        id: 'info-action'
+      },
+      slots: {
+        'info-action': '🤠',
+      },
+    });
+    expect(wrapper.find('.cdr-label-standalone__info-action').text()).toBe('🤠');
+  });
+
+  it('renders error slot when error state is active', () => {
+    const wrapper = mount(CdrInput, {
+      propsData: {
+        label: 'test',
+        error: true
+      },
+      slots: {
+        'error': 'whoops',
+      },
+    });
+    expect(wrapper.find('.cdr-form-error').text()).toBe('whoops');
+  });
+
+  it('renders text when passed as error', () => {
+    const wrapper = mount(CdrInput, {
+      propsData: {
+        label: 'test',
+        error: 'incorrect!'
+      },
+    });
+    expect(wrapper.find('.cdr-form-error').text()).toBe('incorrect!');
+  });
+
+  it('does not render error slot when error state is inactive', () => {
+    const wrapper = mount(CdrInput, {
+      propsData: {
+        label: 'test',
+        error: false
+      },
+      slots: {
+        'error': 'whoops',
+      },
+    });
+    expect(wrapper.find('.cdr-form-error').exists()).toBe(false);
+  });
+
+  it('renders error slot instead of bottom helper slot when error is active', () => {
+    const wrapper = mount(CdrInput, {
+      propsData: {
+        label: 'test',
+        error: true,
+        helperPosition: 'bottom'
+      },
+      slots: {
+        'error': 'whoops',
+        'helper-text': 'not me'
+      },
+    });
+    expect(wrapper.find('.cdr-form-error').text()).toBe('whoops');
+    expect(wrapper.find('.cdr-input__helper-text-bottom').exists()).toBe(false);
   });
 
   // NOTE - can't use v-model directly here, targeting the `data` prop instead

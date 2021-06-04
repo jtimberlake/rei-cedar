@@ -3,6 +3,15 @@
 $modal-animation-duration: 150ms;
 
 .cdr-modal {
+  @supports (-webkit-touch-callout: none) {
+    & * {
+      // Safari iOS hack: force hardware acceleration on all elements inside modal
+      //     otherwise content that is offscreen will flicker/disappear when scrolling
+      // Issue has to do with scrolling inside a position: fixed or relative container
+      will-change: transform;
+    }
+  }
+
   bottom: 0;
   height: 100%;
   left: 0;
@@ -23,29 +32,25 @@ $modal-animation-duration: 150ms;
     right: 0;
     top: 0;
     transition: opacity $modal-animation-duration;
-    z-index: -1;
+    z-index: 0;
   }
 
   &__outerWrap {
     display: flex;
     box-sizing: border-box;
-    left: 0;
     min-height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
+    position: static;
     z-index: -1;
   }
 
   &__contentWrap {
     align-items: flex-start;
-    background-color: $cdr-color-background-lightest;
+    background-color: $cdr-color-background-primary;
     display: flex;
     flex-direction: column;
     margin: auto;
     min-height: 100%;
     opacity: 1;
-    padding: 16px;
     position: absolute;
     top: 0;
     left: 0;
@@ -60,6 +65,7 @@ $modal-animation-duration: 150ms;
 
   &__innerWrap {
     width: 100%; // IE 11
+    padding: $cdr-space-one-x;
   }
 
   &__dialog {
@@ -77,6 +83,7 @@ $modal-animation-duration: 150ms;
 
   &__title {
     flex: auto;
+    @include cdr-text-heading-serif-600;
   }
 
   &__close-button {
@@ -101,19 +108,7 @@ $modal-animation-duration: 150ms;
 
   &__text-content {
     overflow: auto;
-    padding-right: $cdr-space-one-and-a-half-x;
     position: relative;
-  }
-
-  &__text-fade {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: $cdr-space-two-x;
-    /* full transparency doesn't fly on safari */
-    background: linear-gradient(rgba(255,255,255,0.001), rgba(255,255,255,1));
-    background-attachment: scroll;
-    width: 100%;
   }
 
   @media (min-width: $cdr-breakpoint-sm) {
@@ -121,11 +116,14 @@ $modal-animation-duration: 150ms;
       padding: $cdr-space-one-x;
     }
 
+    &__innerWrap {
+      padding: $cdr-space-one-and-a-half-x;
+    }
+
     &__contentWrap {
       border-radius: $cdr-radius-softer;
       box-shadow: $cdr-prominence-lifted;
       min-height: auto;
-      padding: $cdr-space-one-and-a-half-x;
       position: relative;
       top: auto;
       left: auto;
@@ -140,10 +138,6 @@ $modal-animation-duration: 150ms;
       margin-left: $cdr-space-three-quarter-x;
       right: -8px;
       top: -5px;
-    }
-
-    &__text-content {
-      padding-right: $cdr-space-two-x;
     }
   }
 }

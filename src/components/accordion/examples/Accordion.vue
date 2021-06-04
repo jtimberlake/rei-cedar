@@ -1,18 +1,12 @@
 <template>
   <div class="accordion-container">
-    <cdr-text
-      tag="h2"
-      modifier="heading-serif-600 heading-serif-700@md heading-serif-700@lg"
-    >
+    <h2>
       Accordion
-    </cdr-text>
+    </h2>
 
-    <cdr-text
-      tag="h3"
-      modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-    >
+    <h3>
       Default Standalone
-    </cdr-text>
+    </h3>
     <cdr-accordion
       id="default-standalone"
       level="3"
@@ -45,12 +39,9 @@
     </cdr-accordion>
 
     <div class="accordion-group">
-      <cdr-text
-        tag="h3"
-        modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-      >
+      <h3>
         Default
-      </cdr-text>
+      </h3>
       <cdr-accordion-group data-backstop="accordion-default">
         <cdr-accordion
           id="default"
@@ -87,9 +78,11 @@
           level="3"
           :opened="accordionDefault2"
           @accordion-toggle="accordionDefault2 = !accordionDefault2"
-          label="Label with multiple words, so many words in fact that
-          this content may wrap to several lines"
         >
+          <template slot="label">
+            Label with multiple words, so many words in fact
+            that this content may wrap to several lines
+          </template>
           <cdr-list modifier="unordered">
             <li>This is a cdr-list item inside an accordion.</li>
             <li>It includes no extra styling</li>
@@ -103,12 +96,9 @@
     </div>
 
     <div class="accordion-group">
-      <cdr-text
-        tag="h3"
-        modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-      >
+      <h3>
         Border-Aligned and data driven
-      </cdr-text>
+      </h3>
       <cdr-accordion-group data-backstop="accordion-border-aligned">
         <cdr-accordion
           v-for="(item, index) in grouped"
@@ -128,21 +118,20 @@
     </div>
 
     <div class="accordion-group">
-      <cdr-text
-        tag="h3"
-        modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-      >
+      <h3>
         Compact
-      </cdr-text>
+      </h3>
       <cdr-accordion-group data-backstop="accordion-compact">
         <cdr-accordion
           id="compact"
           level="3"
-          label="Compact"
           :compact="true"
           :opened="accordionCompact"
           @accordion-toggle="accordionCompact = !accordionCompact"
         >
+          <template slot="label">
+            compact
+          </template>
           <cdr-list modifier="unordered">
             <li>
               <cdr-link
@@ -170,12 +159,15 @@
         <cdr-accordion
           id="compact-2"
           level="3"
-          label="Label with multiple words, so many words in fact that
-          this content may wrap to several lines"
           :compact="true"
           :opened="accordionCompact2"
           @accordion-toggle="accordionCompact2 = !accordionCompact2"
         >
+
+          <template slot="label">
+            Label with multiple words, so many words in fact
+            that this content may wrap to several lines
+          </template>
           <cdr-list tag="ol">
             <li>Item one</li>
             <li>Item two</li>
@@ -184,6 +176,63 @@
         </cdr-accordion>
       </cdr-accordion-group>
     </div>
+
+    <h3>
+      Unwrapped Standalone
+    </h3>
+
+    <cdr-accordion-group unwrap="@md @lg">
+      <cdr-accordion
+        id="default-unwrap"
+        level="3"
+        :opened="accordionDefault"
+        @accordion-toggle="accordionDefault = !accordionDefault"
+      >
+        <template slot="label">
+          A short label
+        </template>
+        <cdr-text
+          modifier="body-300"
+        >
+          This is some text. It's in a
+          <cdr-text
+            tag="strong"
+            modifier="body-strong-300"
+          >cdr-text paragraph with a modifier of <code>body-300</code></cdr-text> element as
+          thats how you assign the correct font and line-height for text dislpay on REI.
+          does not include margin or add space to the container. Lorem ipsum dolor
+          sit amet, consectetur adipiscing elit. Sed dictum fermentum tortor posuere
+          fermentum. Sed interdum vel urna at tempor. Nullam vel sapien odio. Class
+          aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
+          himenaeos. Fusce venenatis ex ut ultricies tincidunt. Suspendisse potenti.
+          Sed ut euismod mi, sit amet porta augue. Proin dictum laoreet blandit. Nulla
+          tempus tellus id ligula sodales ultrices. Proin lacus diam, ornare at libero
+          nec, eleifend vulputate mi. Praesent vestibulum accumsan erat id dapibus.
+          Suspendisse ut laoreet nunc, et tempor eros. Etiam vel commodo velit. Proin
+          egestas fringilla elit et lacinia. Praesent et vehicula massa. Fusce ac purus neque.
+        </cdr-text>
+      </cdr-accordion>
+      <cdr-accordion
+        id="default-long-label-unwrap"
+        level="3"
+        :opened="accordionDefault2"
+        @accordion-toggle="accordionDefault2 = !accordionDefault2"
+      >
+        <template slot="label">
+          Label with multiple words, so many words in fact
+          that this content may wrap to several lines
+        </template>
+        <cdr-list modifier="unordered">
+          <li>This is a cdr-list item inside an accordion.</li>
+          <li>It includes no extra styling</li>
+          <li>I'm adding a bunch of items</li>
+          <li>to this list because</li>
+          <li>I want to see what it's like</li>
+          <li>when animated!</li>
+        </cdr-list>
+      </cdr-accordion>
+    </cdr-accordion-group>
+
   </div>
 </template>
 

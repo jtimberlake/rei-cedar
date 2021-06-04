@@ -1,15 +1,11 @@
 import clsx from 'clsx';
-import contentPriority from '../../mixins/contentPriority';
 import size from '../../mixins/size';
-import space from '../../mixins/space';
 import style from './styles/CdrRating.scss';
 
 export default {
   name: 'CdrRating',
   mixins: [
-    contentPriority,
     size,
-    space,
   ],
   props: {
     /**
@@ -50,6 +46,9 @@ export default {
   computed: {
     baseClass() {
       return 'cdr-rating';
+    },
+    displayRating() {
+      return (Math.round(this.rating * 10) / 10).toFixed(1);
     },
     rounded() {
       return Math.round(this.rating * 4) / 4;
@@ -95,10 +94,10 @@ export default {
         }
         // no count
         if (this.count === null) {
-          return `View the reviews with an average rating of ${this.rounded} out of 5 stars`;
+          return `View the reviews with an average rating of ${this.displayRating} out of 5 stars`;
         }
         // default
-        return `View the ${this.count} reviews with an average rating of ${this.rounded} out of 5 stars`; // eslint-disable-line max-len
+        return `View the ${this.count} reviews with an average rating of ${this.displayRating} out of 5 stars`; // eslint-disable-line max-len
       }
 
       // non-linked
@@ -108,10 +107,10 @@ export default {
       }
       // no count
       if (this.count === null) {
-        return `Rated ${this.rounded} out of 5 stars`;
+        return `Rated ${this.displayRating} out of 5 stars`;
       }
       // default
-      return `${this.count} reviews with an average rating of ${this.rounded} out of 5 stars`;
+      return `${this.count} reviews with an average rating of ${this.displayRating} out of 5 stars`;
     },
   },
   render() {
@@ -121,9 +120,7 @@ export default {
         href={this.href}
         class={clsx(
           this.style[this.baseClass],
-          this.contentPriorityClass,
           this.sizeClass,
-          this.space,
           this.href ? this.style['cdr-rating--linked'] : '',
         )}
       >
@@ -157,7 +154,7 @@ export default {
           >
             {this.href
               && <span class={this.style['cdr-rating__number']}>
-                { this.rounded }
+                { this.displayRating }
               </span>
             }
 

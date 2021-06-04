@@ -4,6 +4,7 @@
     <cdr-tabs
       height="500px"
       data-backstop="tab-default"
+      :background-color="backgroundColor"
     >
       <cdr-tab-panel
         name="Details"
@@ -12,15 +13,13 @@
       >
         <cdr-text
           tag="h3"
-          modifier="heading-serif-400"
-          class="tab-title"
+          class="cdr-text-dev--heading-serif-400 tab-title"
         >
           Details
         </cdr-text>
 
         <cdr-list
           modifier="unordered"
-          space="cdr-mb-space-two-x"
         >
           <li>Tuckaway, spacer-mesh shoulder straps and integrated handle make carrying a breeze</li>
           <li>Back pocket holds a hydration reservoir (sold separately)</li>
@@ -37,12 +36,11 @@
       >
         <cdr-text
           tag="h3"
-          modifier="heading-serif-400"
-          class="tab-title"
+          class="cdr-text-dev--heading-serif-400 tab-title"
         >
           Specs
         </cdr-text>
-        <cdr-data-table
+        <cdr-table
           modifier="compact borderless"
         >
           <template slot="tbody">
@@ -83,7 +81,7 @@
               <td>Unisex</td>
             </tr>
           </template>
-        </cdr-data-table>
+        </cdr-table>
       </cdr-tab-panel>
       <cdr-tab-panel
         name="Reviews"
@@ -98,8 +96,7 @@
       >
         <cdr-text
           tag="h3"
-          modifier="heading-serif-400"
-          class="tab-title"
+          class="cdr-text-dev--heading-serif-400 tab-title"
         >
           Q&A
         </cdr-text>
@@ -114,12 +111,12 @@
             A short label
           </template>
           <cdr-text
-            modifier="body-300"
+            class="cdr-text-dev--body-300"
           >
             This is some text. It's in a
             <cdr-text
               tag="strong"
-              modifier="body-strong-300"
+              class="cdr-text-dev--body-strong-300"
             >cdr-text paragraph with a modifier of <code>body-300</code></cdr-text> element as
             thats how you assign the correct font and line-height for text dislpay on REI.
             does not include margin or add space to the container. Lorem ipsum dolor
@@ -129,10 +126,11 @@
           id="tabs-accordion-default-long-label"
           :opened="accordion2"
           @accordion-toggle="accordion2 = !accordion2"
-          label="Label with multiple words, so many words in fact that
-          this content may wrap to several lines"
           level="4"
         >
+          <template slot="label">
+            Label with multiple words, so many words in fact that this content may wrap to several lines
+          </template>
           <cdr-list modifier="unordered">
             <li>This is a cdr-list item inside an accordion.</li>
             <li>It includes no extra styling</li>
@@ -153,6 +151,12 @@ import * as Components from 'srcdir/index';
 export default {
   name: 'TabsDefault',
   components: { ...Components },
+  props: {
+    backgroundColor: {
+      type: String,
+      default: '#ffffff',
+    },
+  },
   data() {
     return {
       accordion1: false,

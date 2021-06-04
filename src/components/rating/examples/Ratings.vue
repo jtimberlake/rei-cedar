@@ -2,14 +2,25 @@
   <div
     class="rating-reset"
   >
-    <cdr-text
-      tag="h2"
-      modifier="heading-serif-600 heading-serif-700@md heading-serif-700@lg"
-    >
+    <h2>
       Ratings
-    </cdr-text>
+    </h2>
     <cdr-rating
       rating="3.3"
+      count="16"
+      content-priority="secondary"
+      href="https://www.rei.com"
+      data-backstop="rating-secondary-linked"
+    />
+    <cdr-rating
+      rating="3.9"
+      count="16"
+      content-priority="secondary"
+      href="https://www.rei.com"
+      data-backstop="rating-secondary-linked"
+    />
+    <cdr-rating
+      rating="3.1"
       count="16"
       content-priority="secondary"
       href="https://www.rei.com"
@@ -45,7 +56,6 @@
     />
     <!-- Large Size -->
 
-
     <cdr-rating
       rating="3"
       count="100"
@@ -60,7 +70,7 @@
     />
     <div class="line-height-reset">
       <cdr-rating
-        rating="3.66"
+        rating="3.63"
         count="1000"
         href="https://www.rei.com"
         size="large"
@@ -124,17 +134,17 @@
     />
 
     <!-- Responsive Size -->
-    <cdr-text tag="h3">
+    <h3>
       Responsive Growing
-    </cdr-text>
+    </h3>
     <cdr-rating
       rating="2"
       count="9"
       size="small@xs medium@md large@lg"
     />
-    <cdr-text tag="h3">
+    <h3>
       Responsive Inverse
-    </cdr-text>
+    </h3>
     <cdr-rating
       rating="3"
       count="100"

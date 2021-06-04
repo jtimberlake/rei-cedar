@@ -14,6 +14,17 @@
     />
 
     <hr>
+    <p>intra-page pagination using buttons</p>
+    <cdr-pagination
+      v-model="page"
+      :pages="pages"
+      :total-pages="10"
+      link-tag="button"
+      for-label="potatoes"
+      data-backstop="pagination-default"
+      @navigate="preventNavigate"
+    />
+    <hr>
 
     <div
       v-for="datam in paginationData.example1[ex1Page]"
@@ -36,7 +47,7 @@
       :total-pages="20"
       v-model="paraPage"
     >
-      <template v-slot:prevLink="prevLink">
+      <template #prevLink="prevLink">
         <p
           v-bind="prevLink.attrs"
           @click="prevLink.click"
@@ -48,7 +59,7 @@
           {{ prevLink.content }}
         </p>
       </template>
-      <template v-slot:link="link">
+      <template #link="link">
         <p
           v-bind="link.attrs"
           @click="link.click"
@@ -56,7 +67,7 @@
           {{ link.page }}
         </p>
       </template>
-      <template v-slot:nextLink="nextLink">
+      <template #nextLink="nextLink">
         <p
           v-bind="nextLink.attrs"
           @click="nextLink.click"
@@ -110,6 +121,11 @@ export default {
   components: {
     ...Components,
   },
+  beforeRouteUpdate(to) {
+    if (Object.prototype.hasOwnProperty.call(to.query, 'router-page')) {
+      this.ex1Page = parseInt(to.query['router-page'], 10);
+    }
+  },
   data() {
     return {
       page: 3,
@@ -146,11 +162,6 @@ export default {
       }
       return 3;
     },
-  },
-  beforeRouteUpdate(to) {
-    if (Object.prototype.hasOwnProperty.call(to.query, 'router-page')) {
-      this.ex1Page = parseInt(to.query['router-page'], 10);
-    }
   },
   methods: {
     updateRoute(num, url, e) {

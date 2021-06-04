@@ -4,115 +4,91 @@
     class="link-examples"
     data-backstop="all-links"
   >
-    <cdr-text
-      tag="h2"
-      modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-    >
+    <h2>
       Links
-    </cdr-text>
+    </h2>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading-sans-300"
-    >
+    <h3>
       Default Link, No props
-    </cdr-text>
+    </h3>
     <div class="anchor-example">
-      <cdr-link data-backstop="cdr-link">
+      <cdr-link
+        href="#baz"
+        data-backstop="cdr-link"
+      >
         REI.com
       </cdr-link>
     </div>
     <div class="anchor-example">
-      <cdr-link />
+      <cdr-link
+        href="#foo"
+        aria-label="baz"
+      />
     </div>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading-sans-300"
-    >Link, href set, spacing class applied</cdr-text>
+    <h3>Link, href set, spacing class applied</h3>
     <cdr-link
       href="https://www.rei.com/"
-      space="cdr-space-inset-one-x"
     >
       REI.com
     </cdr-link>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading-sans-300"
-    >Link, href set</cdr-text>
+    <h3>Link, href set</h3>
     <cdr-link
       href="https://www.example.com/"
     >
       example.com
     </cdr-link>
-    <cdr-text
-      tag="h3"
-      modifier="subheading"
-    >Standalone Link (No underline)</cdr-text>
+    <h3>Standalone Link (No underline)</h3>
     <cdr-link
       modifier="standalone"
-      space="cdr-space-inset-one-x"
+      href="#bar"
       data-backstop="cdr-link--standalone"
     >
       REI.com
     </cdr-link>
 
+    <h3>Links, with icon</h3>
 
-    <cdr-text
-      tag="h3"
-      modifier="subheading-sans-300"
-    >Links, with icon</cdr-text>
-
-    <cdr-list
-      space="cdr-space-inset-one-x"
-    >
+    <cdr-list>
       <li>
-        <cdr-link>
+        <cdr-link href="#baz">
           <cdr-icon
             inherit-color
             use="#mail"
             modifier="inherit-color"
-            space="cdr-mr-space-half-x"
           />
           Icon on the left
         </cdr-link>
       </li>
       <li>
-        <cdr-link>
+        <cdr-link href="#baz">
           Icon on the right
           <cdr-icon
             inherit-color
             use="#download"
             modifier="inherit-color"
-            space="cdr-ml-space-half-x"
           />
         </cdr-link>
       </li>
       <li>
-        <cdr-link>
+        <cdr-link href="#baz">
           <cdr-icon
             inherit-color
             use="#twitter"
             modifier="inherit-color"
-            space="cdr-mr-space-half-x"
           />
           Icons on both sides
           <cdr-icon
             inherit-color
             use="#external-link"
             modifier="inherit-color"
-            space="cdr-ml-space-half-x"
           />
         </cdr-link>
       </li>
     </cdr-list>
 
-
-    <cdr-text
-      tag="h3"
-      modifier="subheading-sans-300"
-    >Links, with inherited color</cdr-text>
+    <h3>Links, with inherited color</h3>
     <div style="color: darkgreen; fill: darkgreen;">
       <cdr-link
         inherit-color
@@ -121,17 +97,29 @@
         inherit-color plain example
       </cdr-link>
       <br>
-      <cdr-link inherit-color>
+      <cdr-link
+        inherit-color
+        href="#qux"
+      >
         <cdr-icon
           inherit-color
           use="#mail"
           modifier="inherit-color"
-          space="cdr-mr-space-half-x"
         />
         cdr-link icon inherit
       </cdr-link>
     </div>
+    <br><br>
+    <h3>Button Links</h3>
 
+    <h4>Link using a &lt;button&gt; element inline</h4>
+    <div class="anchor-example stack">
+      hey there <cdr-link
+        tag="button"
+        data-backstop="cdr-link--button"
+        @click="clicked"
+      >I'm a button!</cdr-link> wow!
+    </div>
 
   </div>
 </template>
@@ -158,6 +146,11 @@ export default {
 
 .link-examples {
   line-height: 1;
+}
+
+.button-padding-override {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 </style>

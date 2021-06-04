@@ -1,12 +1,8 @@
 <template>
   <div>
-    <cdr-text
-      tag="h2"
-      modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-      space="cdr-my-space-two-x"
-    >
+    <h2>
       Selects
-    </cdr-text>
+    </h2>
     <hr class="icon-hr">
 
     <div data-backstop="select-target">
@@ -14,8 +10,9 @@
       <cdr-select
         label="Default"
         v-model="selectedA"
+        :background="backgroundColor"
         prompt="Choose one"
-        space="cdr-my-space-two-x"
+
         @select-change="doExternal"
       >
         <option value="1">
@@ -39,9 +36,9 @@
       <cdr-select
         label="Required with Prompt"
         v-model="selectedB"
+        :background="backgroundColor"
         prompt="Choose one"
         required
-        space="cdr-my-space-two-x"
       >
         <option value="1">
           1
@@ -64,8 +61,8 @@
     <cdr-select
       label="Disabled select"
       v-model="selectedDisabled"
+      :background="backgroundColor"
       disabled
-      space="cdr-my-space-two-x"
     >
       <option value="1">
         1
@@ -79,8 +76,8 @@
       label="Hidden label text"
       hide-label
       v-model="selectedC"
+      :background="backgroundColor"
       prompt="Hidden label"
-      space="cdr-my-space-two-x"
     >
       <option value="1">
         1
@@ -101,8 +98,9 @@
     <!-- No Prompt Example -->
     <cdr-select
       label="No Prompt"
-      space="cdr-my-space-two-x"
+
       v-model="selectedD"
+      :background="backgroundColor"
     >
       <option value="1">
         1
@@ -124,8 +122,9 @@
     <cdr-select
       label="Dynamic"
       v-model="dynamic"
+      :background="backgroundColor"
       :options="dynamicData"
-      space="cdr-my-space-two-x"
+
       prompt="Choose One"
     />
     <cdr-text>Selected: {{ dynamic }}</cdr-text>
@@ -135,12 +134,22 @@
     <cdr-select
       label="Example with Helper Text"
       v-model="helperTextModel"
+      :background="backgroundColor"
       :options="dynamicData"
-      space="cdr-my-space-two-x"
+
       prompt="Choose One"
     >
       <template slot="helper-text">
         This is helper text.
+      </template>
+
+      <template slot="info">
+        <cdr-link
+          href="#/selects"
+          modifier="standalone"
+        >
+          Info Link/Icon
+        </cdr-link>
       </template>
     </cdr-select>
     <cdr-text>Selected Value: {{ helperTextModel }}</cdr-text>
@@ -150,8 +159,9 @@
     <cdr-select
       label="Example with Info Link"
       v-model="infoLinkModel"
+      :background="backgroundColor"
       :options="dynamicData"
-      space="cdr-my-space-two-x"
+
       prompt="Choose One"
     >
       <template slot="info">
@@ -170,37 +180,97 @@
     <cdr-select
       label="Example with Info Icon"
       v-model="infoIconModel"
+      :background="backgroundColor"
       :options="dynamicData"
-      space="cdr-my-space-two-x"
+
       prompt="Choose One"
     >
-      <template slot="info">
-        <icon-information-fill size="small" />
+      <template slot="info-action">
+        <cdr-link
+          tag="button"
+          type="button"
+        >
+          <icon-information-stroke inherit-color />
+          <span class="sr-only">Information!</span>
+        </cdr-link>
       </template>
     </cdr-select>
     <cdr-text>Selected Value: {{ infoIconModel }}</cdr-text>
+    <hr class="icon-hr">
+
+    <!-- Pre Icon Example -->
+    <cdr-select
+      label="Example with Pre Icon"
+      v-model="preIconModel"
+      :background="backgroundColor"
+      :options="dynamicData"
+
+      prompt="Choose One"
+    >
+      <template slot="pre-icon">
+        <icon-lock-locked-stroke />
+      </template>
+    </cdr-select>
+    <cdr-text>Selected Value: {{ preIconModel }}</cdr-text>
+    <hr class="icon-hr">
+
+    <!-- Error Example default -->
+    <cdr-select
+      label="Example with status error"
+      v-model="preIconModel"
+      :background="backgroundColor"
+      :options="dynamicData"
+      aria-describedby="statusTest"
+
+      prompt="Choose One"
+      :error="true"
+    >
+      <template slot="error">
+        <span id="statusTest">error message goes here</span>
+      </template>
+    </cdr-select>
+    <hr class="icon-hr">
+
+    <!-- Error Example alert -->
+    <cdr-select
+      label="Example with Alert error"
+      v-model="preIconModel2"
+      :background="backgroundColor"
+      :options="dynamicData"
+      error-role="alert"
+      aria-describedby="alertTest"
+
+      prompt="Choose One"
+      :error="true"
+    >
+      <template slot="error">
+        <span id="alertTest">Alert error message goes here</span>
+      </template>
+    </cdr-select>
     <hr class="icon-hr">
 
     <!-- Large Select Example -->
     <cdr-select
       label="Size = Large"
       v-model="dynamic"
+      :background="backgroundColor"
       size="large"
       :options="dynamicData"
-      space="cdr-my-space-two-x"
+
       prompt="Choose One"
     />
     <cdr-text>Selected Value: {{ dynamic }}</cdr-text>
     <hr class="icon-hr">
 
-    <cdr-text class="cdr-my-space-two-x">
+    <h3 class="stack">
       Multiple Select with size
-    </cdr-text>
+    </h3>
 
     <cdr-select
       label="Multiple Prompt"
       v-model="multiple"
-      multiple-size="6"
+      :background="backgroundColor"
+      :multiple-size="6"
       multiple
     >
       <option
@@ -229,14 +299,14 @@
     <cdr-text>Selected Values: {{ multiple }}</cdr-text>
     <hr class="icon-hr">
 
-
-    <cdr-text class="cdr-my-space-two-x">
+    <h3 class="stack">
       Multiple Select
-    </cdr-text>
+    </h3>
 
     <cdr-select
       label="Multiple Prompt"
       v-model="multiple2"
+      :background="backgroundColor"
       multiple
       :options="multiple2Data"
     />
@@ -263,11 +333,21 @@ export default {
       helperTextModel: '',
       infoLinkModel: '',
       infoIconModel: '',
-      // DEPRECATED
+      preIconModel: '',
+      preIconModel2: '',
       multiple: ['1', '2'],
       multiple2: ['-1'],
       multiple2Data: ['a', 'b', 'c', 'd'],
+      backgroundColor: 'primary',
     };
+  },
+  watch: {
+    $route(to) {
+      this.setBackground(to.query.background);
+    },
+  },
+  mounted() {
+    this.setBackground(this.$router.currentRoute.query.background);
   },
   methods: {
     inputEventHandler(selectedValue, event) {
@@ -278,6 +358,18 @@ export default {
     },
     doExternal(v, e) {
       console.log('EXTERNAL', v, e); // eslint-disable-line
+    },
+    setBackground(background) {
+      switch (background) {
+        case 'primary':
+          this.backgroundColor = 'primary';
+          break;
+        case 'secondary':
+          this.backgroundColor = 'secondary';
+          break;
+        default:
+          this.backgroundColor = 'primary';
+      }
     },
   },
 };

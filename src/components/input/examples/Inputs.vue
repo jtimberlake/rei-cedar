@@ -1,23 +1,30 @@
 <template>
   <div>
-    <cdr-text
-      tag="h2"
-      modifier="heading-sans-400 heading-sans-500@md heading-sans-500@lg"
-    >
+    <h2>
       Text Inputs
-    </cdr-text>
+    </h2>
     <div data-backstop="input-target">
       <cdr-input
         class="demo-input"
         v-model="defaultModel"
-        label="#1 Default"
+        label="Default"
+        :background="backgroundColor"
       />
 
       <cdr-input
         class="demo-input"
         v-model="requiredModel"
-        label="#2 Required"
+        label="Required"
         required
+        :background="backgroundColor"
+      />
+
+      <cdr-input
+        class="demo-input"
+        v-model="optionalModel"
+        label="Optional"
+        optional
+        :background="backgroundColor"
       />
     </div>
 
@@ -26,16 +33,18 @@
       v-model="hiddenModel"
       label="This has no label"
       hide-label
-      placeholder="#3 hidden-label"
+      placeholder="hidden-label"
+      :background="backgroundColor"
     />
 
     <cdr-input
       class="demo-input"
       v-model="disabledModel"
-      label="#4 Disabled Input"
+      label="Disabled Input"
       placeholder="I am disabled"
       data-backstop="input-disabled"
       disabled
+      :background="backgroundColor"
     />
 
     <cdr-input
@@ -44,6 +53,7 @@
       label="Large Input"
       placeholder="Large Input"
       size="large"
+      :background="backgroundColor"
     />
     <cdr-input
       class="demo-input"
@@ -51,6 +61,7 @@
       label="Large@xs Input"
       placeholder="Large@xs Input"
       size="large@xs"
+      :background="backgroundColor"
     />
     <cdr-input
       class="demo-input"
@@ -58,6 +69,7 @@
       label="Large@sm Input"
       placeholder="Large@sm Input"
       size="large@sm"
+      :background="backgroundColor"
     />
     <cdr-input
       class="demo-input"
@@ -65,6 +77,7 @@
       label="Large@md Input"
       placeholder="Large@md Input"
       size="large@md"
+      :background="backgroundColor"
     />
     <cdr-input
       class="demo-input"
@@ -72,6 +85,7 @@
       label="Large@lg Input"
       placeholder="Large@lg Input"
       size="large@lg"
+      :background="backgroundColor"
     />
 
     <cdr-input
@@ -79,10 +93,98 @@
       v-model="requiredWithIcons"
       id="required-with-icon"
       placeholder="Required with Icon"
-      label="#5 Input Label"
+      label="Required with Icon"
       required
       type="email"
+      :background="backgroundColor"
     >
+      <template slot="info-action">
+        <cdr-link
+          tag="button"
+          type="button"
+        >
+          <icon-information-stroke inherit-color />
+          <span class="sr-only">Information!</span>
+        </cdr-link>
+      </template>
+      <template slot="pre-icon">
+        <cdr-icon
+          use="#twitter"
+        />
+      </template>
+      <template slot="post-icon">
+        <cdr-icon
+          use="#check-lg"
+        />
+      </template>
+      <template slot="helper-text">
+        This is helper text. Input length: {{ requiredWithIcons.length }}
+      </template>
+    </cdr-input>
+
+    <form>
+      <cdr-input
+        class="demo-input"
+        v-model="formWithButtons"
+        id="form-example"
+        placeholder="For testing icon/button placement with autofill"
+        label="Form with Two Buttons"
+        required
+        type="email"
+        autocomplete="username"
+        :background="backgroundColor"
+      >
+        <template slot="pre-icon">
+          <cdr-icon
+            use="#twitter"
+          />
+        </template>
+        <template slot="post-icon">
+          <cdr-tooltip
+            class="cdr-input__button"
+            id="input-tooltip"
+          >
+            <cdr-button
+              :icon-only="true"
+              slot="trigger"
+              aria-label="navigate"
+            >
+              <icon-map />
+            </cdr-button>
+
+            hey where am i?
+          </cdr-tooltip>
+          <cdr-button
+            :icon-only="true"
+            class="cdr-input__button"
+            aria-label="close"
+          >
+            <icon-x-lg />
+          </cdr-button>
+        </template>
+      </cdr-input>
+    </form>
+
+    <cdr-input
+      class="demo-input"
+      v-model="helperValidationModel"
+      placeholder="errors"
+      :error="helperValidationError"
+      @blur="validate"
+      label="Top helper with status validation"
+      :background="backgroundColor"
+      aria-describedby="myHelpText errorMessage"
+    >
+      <template slot="helper-text-top">
+        <span id="myHelpText">Must be 4 or less characters</span>
+      </template>
+
+      <template
+        slot="error"
+      >
+        <span id="errorMessage">you have added too many characters, remove some</span>
+      </template>
+
       <template slot="info">
         <cdr-link
           modifier="standalone"
@@ -91,28 +193,85 @@
           Support link
         </cdr-link>
       </template>
-      <template slot="pre-icon">
-        <cdr-icon
-          use="#twitter"
-          inherit-color
-        />
+    </cdr-input>
+
+    <cdr-input
+      class="demo-input"
+      :required="true"
+      v-model="megaModel"
+      :error="megaErr"
+      error-role="alert"
+      id="inputWithError"
+      label="Everything at the same time, alert validation"
+      @blur="megaErr = false"
+      size="large"
+      aria-describedby="topHelp bottomHelp errorMessage"
+    >
+      <icon-map slot="pre-icon" />
+      <template slot="helper-text-top">
+        <span id="topHelp">Hey im on top of the input!</span>
+      </template>
+      <template slot="helper-text-bottom">
+        <span id="bottomHelp">Hey im below the input!</span>
+      </template>
+      <template slot="info">
+        <cdr-link
+          href="#baz"
+          modifier="standalone"
+          aria-describedby="inputWithError"
+        >
+          Hey im also on top of the input!
+        </cdr-link>
+      </template>
+      <template slot="info-action">
+        <cdr-link
+          tag="button"
+          type="button"
+        >
+          <span class="sr-only">I trigger some sort of action!</span>
+          <icon-check-stroke inherit-color />
+        </cdr-link>
       </template>
       <template slot="post-icon">
-        <cdr-icon
-          use="#check-lg"
-          inherit-color
-        />
-      </template>
-      <template slot="helper-text">
-        This is helper text. Input length: {{ requiredWithIcons.length }}
+        <cdr-tooltip
+          class="cdr-input__button"
+          id="mega-tooltip"
+        >
+          <cdr-button
+            slot="trigger"
+            :icon-only="true"
+            @click="megaErr = 'you have five minutes to fix this'"
+            size="large"
+            aria-label="Click me to cause an error"
+          >
+            <icon-x-stroke />
+          </cdr-button>
+          I put the input into an error state!
+        </cdr-tooltip>
+        <cdr-popover
+          class="cdr-input__button"
+          id="mega-popover"
+        >
+          <cdr-button
+            slot="trigger"
+            :icon-only="true"
+            size="large"
+            aria-label="Hello"
+          >
+            <icon-information-stroke />
+          </cdr-button>
+          Hey What's Up?
+        </cdr-popover>
       </template>
     </cdr-input>
+
     <cdr-input
       class="demo-input "
       v-model="multiRowModel"
       :rows="10"
-      placeholder="#6 Multi Line Input/TextArea"
-      label="#6 Multi Line Input/TextArea"
+      placeholder="Multi Line Input/TextArea"
+      label="Multi Line Input/TextArea"
+      :background="backgroundColor"
     />
     <cdr-input
       class="demo-input "
@@ -120,28 +279,42 @@
       @input="onMasterInput"
       placeholder="What would you like to set all input values to?"
       label="Master input that overwrites all other inputs on this page"
+      :background="backgroundColor"
     />
 
     <div class="demo-input">
-      Input #1 Value = {{ defaultModel }}
+      Default Input Value = {{ defaultModel }}
     </div>
     <div class="demo-input">
-      Input #2 Value = {{ requiredModel }}
+      Required Input Value = {{ requiredModel }}
     </div>
     <div class="demo-input">
-      Input #3 Value = {{ hiddenModel }}
+      Optional Input Value = {{ optionalModel }}
     </div>
     <div class="demo-input">
-      Input #4 Value = {{ disabledModel }}
+      Hidden Input Value = {{ hiddenModel }}
     </div>
     <div class="demo-input">
-      Input #5 Value = {{ requiredWithIcons }}
+      Disabled Input Value = {{ disabledModel }}
     </div>
     <div class="demo-input">
-      Input #6 Value = {{ multiRowModel }}
+      With Icons Input Value = {{ requiredWithIcons }}
+    </div>
+    <div class="demo-input">
+      Form With Buttons Value = {{ formWithButtons }}
+    </div>
+    <div class="demo-input">
+      Helper/Validation Input Value = {{ helperValidationModel }}
+    </div>
+    <div class="demo-input">
+      Multi Row Input Value = {{ multiRowModel }}
     </div>
     <div class="demo-input">
       Size Inputs Value = {{ sizeModel }}
+    </div>
+
+    <div class="demo-input">
+      Mega Input Value = {{ megaModel }}
     </div>
     <div class="demo-input">
       Master Inputs Value = {{ masterModel }}
@@ -161,24 +334,58 @@ export default {
     return {
       defaultModel: '',
       requiredModel: '',
+      optionalModel: '',
       hiddenModel: '',
       disabledModel: '',
+      helperValidationModel: '',
+      helperValidationError: true,
       requiredWithIcons: '',
       multiRowModel: '',
       sizeModel: '',
+      formWithButtons: '',
       masterModel: '',
+      megaModel: '',
+      megaErr: false,
+      backgroundColor: 'primary',
     };
   },
+  watch: {
+    $route(to) {
+      this.setBackground(to.query.background);
+    },
+  },
+  mounted() {
+    this.setBackground(this.$router.currentRoute.query.background);
+  },
   methods: {
+    validate() {
+      this.helperValidationError = this.helperValidationModel.length > 4;
+    },
     onMasterInput(value, e) {
       console.log('On Master Input value = ', value, ' e = ', e); // eslint-disable-line
       this.defaultModel = value;
       this.requiredModel = value;
+      this.optionalModel = value;
       this.hiddenModel = value;
       this.disabledModel = value;
+      this.formWithButtons = value;
       this.requiredWithIcons = value;
+      this.helperValidationModel = value;
       this.multiRowModel = value;
       this.sizeModel = value;
+      this.megaModel = value;
+    },
+    setBackground(background) {
+      switch (background) {
+        case 'primary':
+          this.backgroundColor = 'primary';
+          break;
+        case 'secondary':
+          this.backgroundColor = 'secondary';
+          break;
+        default:
+          this.backgroundColor = 'primary';
+      }
     },
   },
 };

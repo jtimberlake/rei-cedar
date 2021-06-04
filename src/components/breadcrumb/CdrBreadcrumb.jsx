@@ -1,14 +1,8 @@
 import clsx from 'clsx';
-import CdrIcon from '../icon/CdrIcon';
-import modifier from '../../mixins/modifier';
 import style from './styles/CdrBreadcrumb.scss';
 
 export default {
   name: 'CdrBreadcrumb',
-  components: {
-    CdrIcon,
-  },
-  mixins: [modifier],
   props: {
     /**
      * Required. List of source breadcrumb property objects
@@ -125,9 +119,9 @@ export default {
   methods: {
     handleEllipsisClick() {
       this.truncate = false;
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.$el.querySelector('li *').focus();
-      });
+      }, 1);
     },
   },
   render() {
