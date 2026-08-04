@@ -73,7 +73,7 @@
     "cross-env": "^7.0.3",
     "cross-spawn": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.27.0",
+    "eslint": "^8.0.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-import-resolver-alias": "^1.1.2",
